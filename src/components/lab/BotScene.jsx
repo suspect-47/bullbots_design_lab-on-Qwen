@@ -4,6 +4,7 @@ import { OrbitControls, Grid, ContactShadows } from '@react-three/drei'
 import { botToMeshes } from '../../lib/scene/botToMeshes.js'
 import CadPart from '../scene/CadPart.jsx'
 import DesignReview from './DesignReview.jsx'
+import { downscaleCanvas } from '../../lib/critique/capture.js'
 
 const SELECT = '#1fe3e8'
 const EDGE = '#20303d'
@@ -34,14 +35,16 @@ function ModuleMesh({ d, selected, hovered, onSelect, onHover }) {
 }
 
 // Hands the parent a function that renders the current frame and reads it back
-// as a PNG. The read has to happen immediately after a draw — with the default
+// as a downscaled JPEG data URL (see capture.js — a full-size retina PNG is too
+// big for the deployed /critique body limit). The read has to happen
+// immediately after a draw — with the default
 // swap-chain the buffer is already cleared by the time an event handler runs,
 // which is why the canvas below asks for preserveDrawingBuffer.
 function CaptureBridge({ onReady }) {
   const { gl, scene, camera } = useThree()
   onReady(() => {
     gl.render(scene, camera)
-    return gl.domElement.toDataURL('image/png')
+    return downscaleCanvas(gl.domElement)
   })
   return null
 }

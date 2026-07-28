@@ -23,15 +23,25 @@ export function buildApp({ pool, agent, roster, verdictAgent, chatAgent, visionA
 
   app.get('/health', async () => ({ ok: true }))
 
-  app.get('/bots', async () => {
-    const { rows } = await pool.query('SELECT * FROM bots ORDER BY name')
-    return rows
-  })
+  // Roster rows, preferring the live bots table. A deployment without Postgres
+  // (the public demo) still has to answer: fall back to the injected snapshot
+  // rather than 500ing and making the dashboard guess.
+  async function rosterRows(sql) {
+    if (pool) {
+      try {
+        const { rows } = await pool.query(sql)
+        if (rows.length) return rows
+      } catch { /* fall through to the snapshot */ }
+    }
+    return roster || []
+  }
+
+  app.get('/bots', async () => rosterRows('SELECT * FROM bots ORDER BY name'))
 
   // Live meta: compute per-class aggregates from the current bots table, so a
   // fresh `npm run ingest` (Bright Data → Postgres) is reflected immediately.
   app.get('/meta', async () => {
-    const { rows } = await pool.query('SELECT weapon_class AS weapon, wins, losses, ko_wins AS "koWins" FROM bots')
+    const rows = await rosterRows('SELECT weapon_class AS weapon, wins, losses, ko_wins AS "koWins" FROM bots')
     return aggregateByClass(rows)
   })
 

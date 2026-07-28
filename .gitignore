@@ -4,3 +4,4 @@ dist
 .playwright-mcp
 .DS_Store
 _submission
+.vercel

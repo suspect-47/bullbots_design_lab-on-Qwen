@@ -1,5 +1,7 @@
 # BattleBots Design Lab
 
+**Live demo → [battlebots-design-lab.vercel.app](https://battlebots-design-lab.vercel.app)** (full stack: live Qwen agents, vision review, Toro chat, and the Bright Data meta dashboard — no setup, no key).
+
 A production-grade computer-aided design tool for BattleBots teams: design a bot in 3D, let an **agent society** negotiate a build grounded in real historical fight data, simulate the fight with real physics, and read the meta — with the society **learning across sessions**.
 
 Four modes (top nav) plus **Toro**, an in-app AI assistant (bottom-right):
@@ -54,6 +56,19 @@ The backend ships as a container for **Function Compute 3.0**, with an ECS path 
 docker build -f deploy/Dockerfile -t battlebots-api .
 s deploy -y                   # Serverless Devs → Function Compute (deploy/s.yaml)
 ```
+
+## Deploy to Vercel (the public demo)
+
+One deployment serves both halves: the Vite bundle as static assets, and the same Fastify app as a serverless function at `/api/*` ([`api/[...path].js`](api/%5B...path%5D.js), config in [`vercel.json`](vercel.json)). The LLM is still Alibaba Cloud Model Studio — `DASHSCOPE_API_KEY` is a server-side Vercel environment variable and never reaches the browser.
+
+```bash
+vercel link
+vercel env add DASHSCOPE_API_KEY production   # plus DASHSCOPE_BASE_URL, QWEN_MODEL
+vercel env add VITE_API_BASE production       # value: /api
+vercel deploy --prod
+```
+
+`DATABASE_URL` is optional here: without Postgres, `/api/bots` and `/api/meta` serve the committed Bright Data snapshot instead of the live table, so the dashboard renders either way.
 
 ## Real data (Bright Data)
 
