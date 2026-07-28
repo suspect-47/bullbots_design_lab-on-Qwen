@@ -122,11 +122,7 @@ npm run build
 
 Everything decision-relevant is a pure, unit-tested function; the LLM, 3D, and physics are thin layers over that core.
 
-## Hackathon submissions
-
 Live demo for both: [bullbots-design-lab.vercel.app](https://bullbots-design-lab.vercel.app).
-
-**Global AI Hackathon Series with Qwen Cloud** — Track 3: Agent Society.
 
 - Architecture diagrams: [`docs/architecture.md`](docs/architecture.md)
 - Alibaba Cloud API proof file: [`server/llm/qwen.js`](server/llm/qwen.js)
