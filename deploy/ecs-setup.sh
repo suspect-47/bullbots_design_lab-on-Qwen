@@ -8,7 +8,7 @@
 # runs the Fastify API under systemd, and fronts it with nginx on :80.
 #
 # Usage (as root or with sudo, on the ECS box):
-#   curl -fsSL https://raw.githubusercontent.com/suspect-47/battlebots-design-lab/main/deploy/ecs-setup.sh -o ecs-setup.sh
+#   curl -fsSL https://raw.githubusercontent.com/suspect-47/bullbots-design-lab/main/deploy/ecs-setup.sh -o ecs-setup.sh
 #   sudo DASHSCOPE_API_KEY=sk-xxxx bash ecs-setup.sh
 #
 # Environment (all optional except DASHSCOPE_API_KEY):
@@ -23,12 +23,12 @@
 
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/suspect-47/battlebots-design-lab.git}"
+REPO_URL="${REPO_URL:-https://github.com/suspect-47/bullbots-design-lab.git}"
 BRANCH="${BRANCH:-main}"
-APP_DIR="${APP_DIR:-/opt/battlebots}"
-APP_USER="${APP_USER:-battlebots}"
+APP_DIR="${APP_DIR:-/opt/bullbots}"
+APP_USER="${APP_USER:-bullbots}"
 APP_PORT="${APP_PORT:-3001}"
-SERVICE_NAME="battlebots-api"
+SERVICE_NAME="bullbots-api"
 
 DASHSCOPE_API_KEY="${DASHSCOPE_API_KEY:-}"
 DASHSCOPE_BASE_URL="${DASHSCOPE_BASE_URL:-https://dashscope-intl.aliyuncs.com/compatible-mode/v1}"
@@ -127,8 +127,8 @@ chmod 0640 "/etc/${SERVICE_NAME}.env"
 log "Writing systemd unit ${SERVICE_NAME}.service"
 cat > "/etc/systemd/system/${SERVICE_NAME}.service" <<EOF
 [Unit]
-Description=BattleBots Design Lab API (Fastify)
-Documentation=https://github.com/suspect-47/battlebots-design-lab
+Description=BullBots Design Lab API (Fastify)
+Documentation=https://github.com/suspect-47/bullbots-design-lab
 After=network-online.target
 Wants=network-online.target
 

@@ -1,5 +1,5 @@
 # Serverless Devs v3 — Alibaba Cloud Function Compute 3.0
-# Deploys the BattleBots Fastify API as a custom-container function.
+# Deploys the BullBots Fastify API as a custom-container function.
 #
 #   npm i -g @serverless-devs/s3
 #   s config add --AccessKeyID ... --AccessKeySecret ... -a default
@@ -10,23 +10,23 @@
 # Full walkthrough: deploy/README.md
 
 edition: 3.0.0
-name: battlebots-design-lab
+name: bullbots-design-lab
 # Credential alias created by `s config add ... -a default`.
 access: ${env('ALIYUN_ACCESS', 'default')}
 
 vars:
   region: ap-southeast-1
-  functionName: battlebots-api
+  functionName: bullbots-api
   # Alibaba Cloud Container Registry (ACR), Singapore region.
-  image: registry-intl.ap-southeast-1.aliyuncs.com/${env('ACR_NAMESPACE', '<namespace>')}/battlebots-api:latest
+  image: registry-intl.ap-southeast-1.aliyuncs.com/${env('ACR_NAMESPACE', '<namespace>')}/bullbots-api:latest
 
 resources:
-  battlebots_api:
+  bullbots_api:
     component: fc3
     props:
       region: ${vars.region}
       functionName: ${vars.functionName}
-      description: BattleBots Design Lab API — Fastify + Alibaba Cloud Model Studio (Qwen)
+      description: BullBots Design Lab API — Fastify + Alibaba Cloud Model Studio (Qwen)
       runtime: custom-container
       timeout: 60
       memorySize: 1024

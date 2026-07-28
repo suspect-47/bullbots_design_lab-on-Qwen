@@ -1,4 +1,4 @@
-# Architecture — BattleBots Design Lab
+# Architecture — BullBots Design Lab
 
 Track 3: **Agent Society**. Five specialist agents, each owning one axis of a
 combat-robot design, negotiate a build against a specific opponent. Every agent
@@ -51,7 +51,7 @@ flowchart TB
     subgraph ali["③ Alibaba Cloud"]
         direction LR
         QWEN["Model Studio (DashScope)<br/>qwen-plus"]
-        ACR["Container Registry<br/>battlebots-api image"]
+        ACR["Container Registry<br/>bullbots-api image"]
         OSS["OSS<br/>static site + assets"]
         RDS[("ApsaraDB RDS<br/>PostgreSQL · bots")]
     end

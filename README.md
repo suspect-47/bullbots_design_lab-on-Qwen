@@ -1,6 +1,6 @@
-# BattleBots Design Lab
+# BullBots Design Lab
 
-**Live demo → [battlebots-design-lab.vercel.app](https://battlebots-design-lab.vercel.app)** (full stack: live Qwen agents, vision review, Toro chat, and the Bright Data meta dashboard — no setup, no key).
+**Live demo → [bullbots-design-lab.vercel.app](https://bullbots-design-lab.vercel.app)** (full stack: live Qwen agents, vision review, Toro chat, and the Bright Data meta dashboard — no setup, no key).
 
 A production-grade computer-aided design tool for BattleBots teams: design a bot in 3D, let an **agent society** negotiate a build grounded in real historical fight data, simulate the fight with real physics, and read the meta — with the society **learning across sessions**.
 
@@ -53,7 +53,7 @@ The chief always **scores every proposal against the actual opponent** before ac
 The backend ships as a container for **Function Compute 3.0**, with an ECS path as an alternative and the frontend on **OSS static website hosting**. Everything is in [`deploy/`](deploy/) — see [`deploy/README.md`](deploy/README.md).
 
 ```bash
-docker build -f deploy/Dockerfile -t battlebots-api .
+docker build -f deploy/Dockerfile -t bullbots-api .
 s deploy -y                   # Serverless Devs → Function Compute (deploy/s.yaml)
 ```
 
@@ -91,7 +91,7 @@ Current agreement is **Spearman rho = 0.83** on class ordering (rmse 0.12), unch
 ## Test / build
 
 ```bash
-npm test             # 553 unit tests (DB-dependent suite skips without DATABASE_URL)
+npm test             # 558 unit tests (DB-dependent suite skips without DATABASE_URL)
 npm run build
 ```
 

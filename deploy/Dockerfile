@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1
 #
-# BattleBots Design Lab — container image for Alibaba Cloud
+# BullBots Design Lab — container image for Alibaba Cloud
 # Function Compute 3.0 (custom-container runtime) or ECS/ACK.
 #
 # Build from the REPO ROOT so the whole source tree is in context:
-#   docker build -f deploy/Dockerfile -t battlebots-api:latest .
+#   docker build -f deploy/Dockerfile -t bullbots-api:latest .
 #
 # Stage 1 builds the Vite frontend so the artifact is reproducible in CI and
 # available for upload to Alibaba Cloud OSS static website hosting.

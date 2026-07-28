@@ -1,4 +1,4 @@
-# Deploying BattleBots Design Lab on Alibaba Cloud
+# Deploying BullBots Design Lab on Alibaba Cloud
 
 Two supported paths for the Fastify backend:
 
@@ -59,7 +59,7 @@ export DASHSCOPE_API_KEY=sk-xxxxxxxxxxxxxxxx
 export DASHSCOPE_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
 export QWEN_MODEL=qwen-plus
 export DATABASE_URL=            # optional; empty is fine, API boots without it
-export ACR_NAMESPACE=battlebots # your ACR namespace
+export ACR_NAMESPACE=bullbots # your ACR namespace
 ```
 
 ---
@@ -69,7 +69,7 @@ export ACR_NAMESPACE=battlebots # your ACR namespace
 ### A1. Create the ACR repository
 
 Container Registry console (region **Singapore / ap-southeast-1**) → Personal
-or Enterprise instance → Namespace `battlebots` → Repository `battlebots-api`
+or Enterprise instance → Namespace `bullbots` → Repository `bullbots-api`
 (type: *Local repository*).
 
 ### A2. Build and push the image
@@ -77,11 +77,11 @@ or Enterprise instance → Namespace `battlebots` → Repository `battlebots-api
 Function Compute runs **linux/amd64**. On an Apple Silicon Mac you must cross-build.
 
 ```bash
-cd /path/to/battlebots
+cd /path/to/bullbots
 
 export ACR_REGISTRY=registry-intl.ap-southeast-1.aliyuncs.com
-export ACR_NAMESPACE=battlebots
-export IMAGE=$ACR_REGISTRY/$ACR_NAMESPACE/battlebots-api:latest
+export ACR_NAMESPACE=bullbots
+export IMAGE=$ACR_REGISTRY/$ACR_NAMESPACE/bullbots-api:latest
 
 # Log in (username = your Alibaba Cloud account, password = the ACR
 # "Access Credential" you set in the console, NOT the console password).
@@ -109,7 +109,7 @@ cd deploy
 s deploy -y
 ```
 
-`s.yaml` creates function `battlebots-api` in `ap-southeast-1`:
+`s.yaml` creates function `bullbots-api` in `ap-southeast-1`:
 `custom-container` runtime, port 9000, 1024 MB, 60 s timeout, `/health` probe,
 and an HTTP trigger with **anonymous** auth.
 
@@ -120,20 +120,20 @@ and an HTTP trigger with **anonymous** auth.
 ```bash
 s info                                  # look for url.system_url / custom_domain
 # or:
-aliyun fc GET /2023-03-30/functions/battlebots-api/triggers/httpTrigger \
+aliyun fc GET /2023-03-30/functions/bullbots-api/triggers/httpTrigger \
   --region ap-southeast-1
 ```
 
 It looks like:
 
 ```
-https://battlebots-api-<uid>-<hash>.ap-southeast-1.fcapp.run
+https://bullbots-api-<uid>-<hash>.ap-southeast-1.fcapp.run
 ```
 
 Verify:
 
 ```bash
-export API_URL=https://battlebots-api-xxxx.ap-southeast-1.fcapp.run
+export API_URL=https://bullbots-api-xxxx.ap-southeast-1.fcapp.run
 curl $API_URL/health
 curl $API_URL/meta
 curl -X POST $API_URL/chat -H 'content-type: application/json' \
@@ -169,7 +169,7 @@ Security group inbound: **22/tcp** (your IP) and **80/tcp** (0.0.0.0/0).
 ```bash
 ssh root@<ECS_PUBLIC_IP>
 
-curl -fsSL https://raw.githubusercontent.com/suspect-47/battlebots-design-lab/main/deploy/ecs-setup.sh -o ecs-setup.sh
+curl -fsSL https://raw.githubusercontent.com/suspect-47/bullbots-design-lab/main/deploy/ecs-setup.sh -o ecs-setup.sh
 
 sudo DASHSCOPE_API_KEY=sk-xxxx \
      QWEN_MODEL=qwen-plus \
@@ -177,17 +177,17 @@ sudo DASHSCOPE_API_KEY=sk-xxxx \
      bash ecs-setup.sh
 ```
 
-The script installs Node 20, clones the repo to `/opt/battlebots`, runs
-`npm ci --omit=dev`, writes `/etc/battlebots-api.env` (0640) and the
-`battlebots-api.service` unit, enables + starts it, and configures nginx to
+The script installs Node 20, clones the repo to `/opt/bullbots`, runs
+`npm ci --omit=dev`, writes `/etc/bullbots-api.env` (0640) and the
+`bullbots-api.service` unit, enables + starts it, and configures nginx to
 reverse-proxy `:80 → 127.0.0.1:3001`. It is idempotent — re-run to update.
 
 ### B3. Verify and operate
 
 ```bash
 curl http://<ECS_PUBLIC_IP>/health
-systemctl status battlebots-api
-journalctl -u battlebots-api -f
+systemctl status bullbots-api
+journalctl -u bullbots-api -f
 sudo bash ecs-setup.sh        # pull latest code + restart
 ```
 
@@ -203,8 +203,8 @@ The API has no static-file plugin; the SPA is hosted on OSS.
 ### F1. Build against the deployed API
 
 ```bash
-cd /path/to/battlebots
-export VITE_API_BASE=https://battlebots-api-xxxx.ap-southeast-1.fcapp.run   # Path A
+cd /path/to/bullbots
+export VITE_API_BASE=https://bullbots-api-xxxx.ap-southeast-1.fcapp.run   # Path A
 # export VITE_API_BASE=http://<ECS_PUBLIC_IP>                               # Path B
 
 VITE_API_BASE=$VITE_API_BASE npm run build     # -> dist/
