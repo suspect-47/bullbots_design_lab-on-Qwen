@@ -70,15 +70,20 @@ vercel deploy --prod
 
 `DATABASE_URL` is optional here: without Postgres, `/api/bots` and `/api/meta` serve the committed Bright Data snapshot instead of the live table, so the dashboard renders either way.
 
+Two constraints this deployment target imposes, both already handled: a design run takes ~25s against Qwen, so `vercel.json` raises `maxDuration` well past the default; and the viewport capture the reviewer sends is downscaled to a 1024 px JPEG ([`src/lib/critique/capture.js`](src/lib/critique/capture.js)), because a full-size retina PNG data URL exceeds the serverless request-body limit.
+
 ## Real data (Bright Data)
 
 `src/data/bots.json` + `aggregates.json` ship committed — the META dashboard renders offline from this **real** snapshot (61 bots scraped from the BattleBots wiki, incl. images and verified fight-video ids). To refresh the assets from source (needs `BRIGHTDATA_API_KEY` + `BRIGHTDATA_ZONE` in `.env`):
 
 ```bash
+npm run scrape       # Bright Data Web Unlocker → the whole roster (wiki category + per-bot pages) → bots.json + aggregates.json
 npm run enrich       # Bright Data Web Unlocker → per-bot images + top-bot fight videos → bots.json
 npm run cartoonize   # image model → transparent chibi avatars for the top 10 → public/bots/ (needs OPENAI_API_KEY; assets are committed, so this is optional)
 npm run ingest       # (optional) Bright Data → Postgres bots table for the live /meta path
 ```
+
+Scraping is one-shot and offline: the app reads the committed JSON and never calls Bright Data at render time.
 
 ## Fight-model calibration
 
@@ -113,16 +118,26 @@ npm run build
 | Alibaba Cloud Model Studio client | `server/llm/qwen.js` |
 | REST API (health/bots/meta/design/verdict/chat/critique) | `server/api/` |
 | Alibaba Cloud deployment (Function Compute / ECS / OSS) | `deploy/` |
+| Vercel deployment (same API as one serverless function) | `api/[...path].js`, `vercel.json` |
 
 Everything decision-relevant is a pure, unit-tested function; the LLM, 3D, and physics are thin layers over that core.
 
-## Hackathon submission
+## Hackathon submissions
 
-Built for the **Global AI Hackathon Series with Qwen Cloud** — **Track 3: Agent Society**.
+Live demo for both: [bullbots-design-lab.vercel.app](https://bullbots-design-lab.vercel.app).
+
+**Global AI Hackathon Series with Qwen Cloud** — Track 3: Agent Society.
 
 - Architecture diagrams: [`docs/architecture.md`](docs/architecture.md)
 - Alibaba Cloud API proof file: [`server/llm/qwen.js`](server/llm/qwen.js)
 - Alibaba Cloud deployment: [`deploy/`](deploy/)
+
+**Bright Data** — the scraped record is the spine: it fills the META dashboard, supplies the opponent the agent society argues against, and calibrates the fight model (Spearman rho = 0.83 on class ordering).
+
+- Web Unlocker client: [`server/ingest/brightdata.js`](server/ingest/brightdata.js)
+- Roster scrape: [`scripts/scrape.mjs`](scripts/scrape.mjs) — 61 heavyweights, 8-class weapon taxonomy
+- Image + fight-video enrichment: [`scripts/enrich.mjs`](scripts/enrich.mjs), [`server/ingest/enrich.js`](server/ingest/enrich.js)
+- The data itself: [`src/data/bots.json`](src/data/bots.json), [`src/data/aggregates.json`](src/data/aggregates.json)
 
 ## License
 
